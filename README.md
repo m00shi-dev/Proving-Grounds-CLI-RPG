@@ -17,4 +17,8 @@ A simple CLI game to practice Python and git. The goal is to create basic game s
   - XP for fighting enemies
   - Increased stats when level gained
 
+Libraries I want to explore for this project:
+- cmd
+- logging
+
 Questions/Contact: m00shi@proton.me
