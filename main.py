@@ -11,85 +11,35 @@ import Help
 import time as t # Used for measuring performance
 import Combat
 
+"""
+TODO:
+[x] Implement help module
+[x] Implement items
+[ ] Implement shop
+[ ] Implement combat
+[ ] Implement fighting random enemies
+[ ] Implement drop table/drops
+[ ] Implement areas
+    [ ] Travel to different areas with different levels
+
+[1/31/26] Changes:
+- Moved item instantiation to Items.py. 
+    -They can now be referenced with Items.object_name
+
+"""
+
 game_load_start_time = t.time() # Start timer for game loading
 
 # Initilize Player object
-player = Player.Player(name="Bryant", hitpoints=100, gold=100, level=1, equipment={}, attack=1)
-player.equipment = player.equipment_dictionary
-
-# Create items for the game
-# The items should be in the initialized in Items class, not instantiated in the main file, but here we are.
-# AFTER CREATING THE ITEM, IT MUST BE ADDED TO THE ITEM LIST - /== ITEM LIST
-
-print("Initializing items...")
-item_load_start_time = t.time() # Start timer for item loading
-
-# ==== WEAPONS === #
-# == DAGGERS ==
-iron_dagger = Items.Items(name='iron dagger', attack=11, armor=0, sell_price=25, buy_price=75, mod_slots=1, 
-                          body_part = 'main_hand')
-
-# == SWORDS == #
-copper_sword = Items.Items(name='basic sword', attack=10, armor=0, sell_price=3, buy_price=10, mod_slots=0,
-                           body_part='main_haind')
-iron_sword = Items.Items(name='iron sword', attack=20, armor=0, sell_price=50, buy_price=250, mod_slots=2, 
-                         body_part='main_hand')
-
-# == MACES == #
-copper_mace = Items.Items(name='copper mace', attack=10, armor=0, sell_price=5, buy_price=10, mod_slots=0,
-                          body_part = 'main_hand')
-iron_mace = Items.Items(name='iron mace', attack=25, armor=0, sell_price=50, buy_price=250, mod_slots=1,
-                        body_part='main_hand')
-
-# == WANDS == #
-
-# ==== ARMOR ==== #
-# == LEATHER ==   #
-leather_helmet = Items.Items(name='leather helmet', attack=0, armor=1, sell_price=3, buy_price=10, mod_slots=0,
-                             body_part='head')
-leather_shoes = Items.Items('leather shoes', attack=0, armor=1, sell_price=1, buy_price=3, mod_slots=0,
-                            body_part='feet')
-leather_gloves = Items.Items(name='leather gloves', attack=0, armor=1, sell_price=1, buy_price=3, mod_slots=0,
-                             body_part='hands')
-leather_tunic = Items.Items(name='leather tunic', attack=0, armor=5, sell_price=10, buy_price=20, mod_slots=0,
-                            body_part='body')
-
-# ==== ITEM LIST ====#
-item_list = []
-item_list.append(copper_sword)
-item_list.append(leather_helmet)
-item_list.append(copper_mace)
-item_list.append(leather_gloves)
-item_list.append(leather_shoes)
-item_list.append(leather_tunic)
-item_list.append(iron_sword)
-item_list.append(iron_mace)
-item_list.append(iron_dagger)
-
-item_load_end_time = t.time() # End timer for item loading
-
-# ==== ENEMIES ====
-print("Initializing enemies...")
-enemy_load_start_time = t.time()
-rat = Enemy.Enemy(name='rat', attack=2, defense =1, hitpoints=5, condition=None, equipment={})
-goblin = Enemy.Enemy(name='goblin', hitpoints=50, attack=3, defense=3, condition=None, equipment={})
-
-enemy_list = []
-
-enemy_load_end_time = t.time()
+player = Player.Player(name="Bryant", hitpoints=100, gold=100, level=1, attack=1)
+# Delete this
+player.inventory.append(Items.iron_dagger)
+player.inventory.append(Items.copper_nugget)
+player.inventory.append(Items.iron_mace)
 
 # ==== LOADING TIME METRICS ====
 print("==== PERFOMANCE METRICS ====")
-# == ITEMS ==
-elapsed_item_load_time = item_load_end_time - item_load_start_time
-formatted_elapsed_item_load_time = 'Item load time: {:.9f} seconds'.format(elapsed_item_load_time)
-print(formatted_elapsed_item_load_time)
-
 # == ENEMIES ==
-elapsed_enemy_load_time = enemy_load_end_time - enemy_load_start_time
-formatted_elapsed_enemy_load_time = 'Enemy load time: {:.9f} seconds'.format(elapsed_enemy_load_time)
-print(formatted_elapsed_enemy_load_time)
-
 # == GAME ==
 game_load_end_time = t.time() # End timer for game loading
 elapsed_game_load_time = game_load_end_time - game_load_start_time
@@ -101,40 +51,42 @@ print("|   Proving Grounds CLI    |")
 print("============================")
 print("Type 'h' or 'help' for help")
 
-
-"""
-TODO:
-[x] Implement help module
-[x] Implement items
-[ ] Implement shop
-[ ] Implement combat
-[ ] Implement fighting random enemies
-[ ] Implement drop table/drops
-[ ] Implement areas
-    [ ] Travel to different areas with different levels
-"""
-
 x = True
-
 while x:
     user_input = CLI.sanitized_input(input("Command: "))
     if user_input == 'q' or user_input == 'quit':
         x = False
-    if user_input == 'h' or user_input == 'help':
+    elif user_input == 'h' or user_input == 'help':
         Help.print_help()
-    if user_input == 'print items' or user_input == 'pi':
-        for item in item_list:
+    elif user_input == 'print items' or user_input == 'pi':
+        for item in Items.item_list:
             print(f"==== {item.name} ====")
             print(f"Attack: {item.attack}\tArmor: {item.armor}\tMod Slots:{item.mod_slots}")
             print(f"Buy For: {item.buy_price} Sell For: {item.sell_price}\n")
-    if user_input == 'armor' or user_input == 'a':
+    elif user_input == 'armor' or user_input == 'a':
         player.print_equipment()
-    if user_input == 'status' or user_input == 's':
-        player.print_status(player)
-    if user_input == 'fight' or user_input == 'f':
-        Combat.main_combat_loop(player,rat)
-        
+    elif user_input == 'status' or user_input == 's':
+        player.print_status()
+    elif user_input == 'fight' or user_input == 'f':
+        player.update_player_stats()
+        Combat.main_combat_loop(player,Enemy.rat)
+    elif user_input == 'inventory' or user_input == 'i':
+        player.print_inventory()
+
+    # ==== EQUIP ITEM ====
+    elif user_input.split()[0] == 'equip' or 'e':
+        # build string to pass into equip_item:
+        string_list = user_input.split()
+        string_list.pop(0) # remove 'equip' or 'e' from string
+        item_name = " ".join(string_list)
+    # ALWAYS RETURNS FALSE BECAUSE Items.item_list constains objects and not strings
+    # How do we compare to Items.item_list.name?
+        for item in Items.item_list:
+            if item.name == item_name:
+                player.equip_item(item)
+                
     # === TESTING EQUIPMENT === CAN DELETE === #
-    if user_input == 'te':
-        Items.Items.equip_item(item=copper_mace, player_object=player)
+
+    elif user_input == 'te':
+        player.equip_item(item=Items.copper_mace)
         player.print_equipment()

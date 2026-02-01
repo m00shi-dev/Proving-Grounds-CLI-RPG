@@ -12,6 +12,8 @@ help_message += "'print items' - Prints a list of items in the game, and their a
 help_message += "'armor' - Prints what the player is wearing\n"
 help_message += "'status' - Prints players level, health, and gold."
 help_message += "'quit' - Does exactly what you expect.\n"
+help_message += "'inventory' - Print a list of items in your inventory"
+help_message += "'equip' - Type 'equip' and then the item name to equip the item"
 
 def print_help():
    print(f"{help_message}\n") 

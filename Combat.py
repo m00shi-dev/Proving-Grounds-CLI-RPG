@@ -19,14 +19,13 @@ def main_combat_loop(player, enemy):
     turn_counter = 0
     while x:
         turn_counter += 1
+        damage_calculation(player,enemy)
+        if enemy.hitpoints <= 0:
+            print(f"You were victorious over {enemy.name}")
+            print(f"The battle lasted {turn_counter} turns")
+            break
+        damage_calculation(enemy,player)
         if player.hitpoints <= 0:
             print("Oh no, you're dead!")
             print(f"The battle lasted {turn_counter} turns.")
             break
-        elif enemy.hitpoints <= 0:
-            print(f"You were victorious over {enemy.name}")
-            print(f"The battle lasted {turn_counter} turns")
-            break
-        else:
-            damage_calculation(player,enemy)
-            damage_calculation(enemy,player)
