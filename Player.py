@@ -62,7 +62,7 @@ class Player():
         'hands':{
             'name': None, # Name of the item
             'armor': None, # How much armor the item has
-            'attack': 5,
+            'attack': 0,
             'weight': 0,
             'condition': 0, # Condition out of 100. This will break if it reaches 0. *PLACEHOLDER*
             'sell_price': None, # How much gold the item is worth
@@ -72,7 +72,7 @@ class Player():
        'main hand':{
             'name': None, # Name of the item
             'armor': None, # How much armor the item has
-            'attack': 5,
+            'attack': 3,
             'weight': 0,
             'condition': 0, # Condition out of 100. This will break if it reaches 0. *PLACEHOLDER*
             'sell_price': None, # How much gold the item is worth
@@ -81,22 +81,34 @@ class Player():
         }
     }
         self.attack = attack
+        self.current_carry_weight = 0
         self.carry_weight= 50
         self.inventory = []
 
     def update_player_stats(self):
         """
-        Iterate through the equipment library and update the player's stats. 
+        Iterate over the player's equipment and update attack, armor, and weight
+        Call this object to update the player object.
         """
-        new_attack = 1
+        new_attack = 0
         new_armor = 0
+        new_weight = 0
         for v in self.equipment.values():
            if v['attack']:
                new_attack += v['attack'] 
+               print(f"Attack to add: {v['attack']}")
+               print(f"New attack:{new_attack}")
            if v['armor']:
-               new_armor += new_armor
+               new_armor += v['armor']
+           if v['weight']:
+               new_weight += v['weight']
+        for item in self.inventory:
+            if item.weight > 0:
+                new_weight += item.weight
         self.attack = new_attack
         self.armor = new_armor
+        self.current_carry_weight = new_weight
+
 
     def print_equipment(self):
         """
@@ -111,20 +123,13 @@ class Player():
     def print_status(self):
         self.update_player_stats()
         # Update weight from inventory and equipment
-        equipment_weight = 0
-        for k,v in self.equipment.items():
-            if v['weight']:
-                equipment_weight += v['weight']
-        for item in self.inventory:
-            if item.weight > 0:
-                equipment_weight += item.weight
         print("\n==== STATUS ====")
         print(f"Level: {self.level}")
         print(f"Health: {self.hitpoints}")
         print(f"Attack: {self.attack}")
         print(f"Armor: {self.armor}")
         print(f"Gold: {self.gold}")
-        print(f"Carry Weight: {equipment_weight}/{self.carry_weight}")
+        print(f"Carry Weight: {self.current_carry_weight}/{self.carry_weight}")
         print("")
 
     def equip_item_old(self, item):
@@ -157,17 +162,45 @@ class Player():
         Equip an item from the player's inventory
         """
         if self.equipment[item.body_part]['name'] == None and item in self.inventory:
-            self.equipment[item.body_part]['name'] = item.name
-            self.equipment[item.body_part]['attack'] = item.attack
-            self.equipment[item.body_part]['armor'] = item.armor
-            self.equipment[item.body_part]['buy_price'] = item.buy_price
-            self.equipment[item.body_part]['weight'] = item.weight
-            self.equipment[item.body_part]['mod_slots'] = item.mod_slots
-            self.equipment[item.body_part]['sell_price'] = item.sell_price
-
-            print(f"[EQUIP SUCCESS] You have equipped {item.name} to your {item.body_part}!")            
-            self.inventory.remove(item)
+            if item.body_part != None:
+                self.equipment[item.body_part]['name'] = item.name
+                self.equipment[item.body_part]['attack'] = item.attack
+                self.equipment[item.body_part]['armor'] = item.armor
+                self.equipment[item.body_part]['buy_price'] = item.buy_price
+                self.equipment[item.body_part]['weight'] = item.weight
+                self.equipment[item.body_part]['mod_slots'] = item.mod_slots
+                self.equipment[item.body_part]['sell_price'] = item.sell_price
+            elif item.body_part == None:
+                print(f"You can't equip an {item.name}")
+            else:
+                print(f"[EQUIP SUCCESS] You have equipped {item.name} to your {item.body_part}!")            
+                self.inventory.remove(item)
         elif item not in self.inventory:
             print(f"You do not own {item.name}")
         else:
             print(f"[EQUIP FAILURE] You are already wearing a {self.equipment[item.body_part]['name']} in {item.body_part}!")
+
+    def drop_item(self, item):
+        """
+        Drop an item from the player's inventory
+        :parameter item should be an item object
+        """
+        try:
+            self.inventory.remove(item)
+        except ValueError:
+            print(f"{item.name} not found.")
+    
+    def compare_item(self, item1, item2):
+        """
+        Helper function to determine if items are equal
+        This was used to determine if objects could be compared
+        and found equal on separate lists
+        """
+
+        print(item1)
+        print(item2)
+
+        if item1 == item2:
+            return True
+        else:
+            return False

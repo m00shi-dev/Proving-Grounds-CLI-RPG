@@ -18,7 +18,7 @@ class Enemy():
 # ==== ENEMIES ====
 print("Initializing enemies...")
 enemy_load_start_time = t.time()
-rat = Enemy(name='rat', attack=2, defense =1, hitpoints=5, condition=None, equipment={})
+rat = Enemy(name='rat', attack=2, defense =1, hitpoints=50, condition=None, equipment={})
 goblin = Enemy(name='goblin', hitpoints=50, attack=3, defense=3, condition=None, equipment={})
 
 # ==== ENEMY LIST ====
