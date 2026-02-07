@@ -1,53 +1,33 @@
-"""
-The module for handling CLI functions
-"""
+from typing import LiteralString
+"""Handles printing messages and player input"""
 
-prompt = "Command>> "
+class CLI:
 
-def sanitized_input():
-    """
-    Sanitize user input with trim() and lower()
-    Do not call directly. This is used in parse_user_input()
-    """
-    user_input = input(prompt)
-    user_input = user_input.strip()
-    user_input = user_input.lower()
+    def convert_input_to_int(input: str) -> int | bool:
+        try:
+           converted_input = int(input)
+        except ValueError:
+            return False 
+        return converted_input
 
-    return user_input
-
-def parse_user_input(user_input):
-    """
-    Split user input workable, key-value pairs, then join with spaces
-    returns a dictionary
-
-    parsed_input_dictionary = {
-                'full_command': 'equip iron dagger',
-                'action_command': 'equip',
-                'object_name': 'iron dagger',
-    }
-
-    """
-    parsed_input_dictionary = {
-        'full_command': None,
-        'action_command': None,
-        'object_name': None,
-    }
-    # Assign full command to parsed input dictionary
-    parsed_input_dictionary['full_command'] = user_input 
-    # Split the string into a list then join as a string without spaces
-    user_input = user_input.split()
-    try:
-        if user_input[0] == 'print':
-            two_word_command = f"{user_input[0]} {user_input[1]}"
-            parsed_input_dictionary['action_command'] = two_word_command
-        # Assign action command to action command in dictionary and remove from list
-        else:
-            parsed_input_dictionary['action_command'] = user_input.pop(0)
-    except:
-        pass
-    # Join the remaining parts of string and add to dictionary
-    user_input = " ".join(user_input)
-    parsed_input_dictionary['object_name'] = user_input
+    def character_class_selection() -> str:
+        class_selection_message = "What class would you like to play?\n"
+        class_selection_message += "1. Warrior\n"
+        class_selection_message += "2. Rogue\n"
+        class_selection_message += "3. Mage\n"
+        class_selection_message += "Enter number for your selection >> "
         
-    return parsed_input_dictionary 
-    
+        while True:
+            selection = CLI.convert_input_to_int(input(class_selection_message))
+            while selection == False:
+                print("That is not a class. Please try again.")
+                selection = CLI.convert_input_to_int(input(class_selection_message))
+            else:
+                break 
+            
+        if selection == 1:
+            return "warrior"
+        if selection == 2:
+            return "rogue"
+        if selection == 3:
+            return "mage"
